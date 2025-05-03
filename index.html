@@ -22,9 +22,6 @@
             opacity: 0;
             display: none;
         }
-        .day-button {
-            transition: background-color 0.2s ease;
-        }
         .collapsible-content {
             max-height: 0;
             overflow: hidden;
@@ -63,19 +60,36 @@
         .menu-content.open {
             transform: translateX(0);
         }
+        .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            background-color: transparent;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .dot.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .dot:hover {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
         @media (max-width: 640px) {
             h1 {
                 font-size: 1.5rem;
-            }
-            .day-button {
-                font-size: 0.875rem;
-                padding: 0.5rem 1rem;
             }
             .exercise-card {
                 padding: 1rem;
             }
             img {
                 height: 10rem;
+            }
+            .dot {
+                width: 12px;
+                height: 12px;
             }
         }
     </style>
@@ -109,14 +123,15 @@
         <button id="retry" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Retry</button>
     </div>
 
-    <!-- Day Navigation -->
-    <div class="flex flex-nowrap overflow-x-auto space-x-2 mb-6 px-4">
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(1)">Day 1</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(2)">Day 2</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(3)">Day 3</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(4)">Day 4</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(5)">Day 5</button>
+    <!-- Day Navigation with Pager Dots -->
+    <div class="flex justify-center space-x-3 mb-4">
+        <div class="dot" data-day="1" onclick="showDay(1)"></div>
+        <div class="dot" data-day="2" onclick="showDay(2)"></div>
+        <div class="dot" data-day="3" onclick="showDay(3)"></div>
+        <div class="dot" data-day="4" onclick="showDay(4)"></div>
+        <div class="dot" data-day="5" onclick="showDay(5)"></div>
     </div>
+    <h2 id="day-title" class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4"></h2>
 
     <!-- Day Containers -->
     <div id="day1" class="day-container hidden relative"></div>
@@ -188,7 +203,6 @@
             exerciseData.forEach(dayData => {
                 const dayContainer = document.getElementById(`day${dayData.day}`);
                 dayContainer.innerHTML = `
-                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">Day ${dayData.day}: ${dayData.title}</h2>
                     <div class="swipe-feedback swipe-left">➡️</div>
                     <div class="swipe-feedback swipe-right">⬅️</div>
                 `;
@@ -225,14 +239,37 @@
             const errorContainer = document.getElementById('error-container');
             errorContainer.classList.remove('hidden');
             document.querySelectorAll('.day-container').forEach(container => container.classList.add('hidden'));
-            document.querySelector('.flex-nowrap').classList.add('hidden');
+            document.querySelector('.flex.justify-center').classList.add('hidden');
+            document.getElementById('day-title').classList.add('hidden');
         }
 
         // Hide error UI
         function hideError() {
             const errorContainer = document.getElementById('error-container');
             errorContainer.classList.add('hidden');
-            document.querySelector('.flex-nowrap').classList.remove('hidden');
+            document.querySelector('.flex.justify-center').classList.remove('hidden');
+            document.getElementById('day-title').classList.remove('hidden');
+        }
+
+        // Update dots to reflect the active day
+        function updateDots(day) {
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.classList.remove('active');
+                if (parseInt(dot.getAttribute('data-day')) === day) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Update day title
+        function updateDayTitle(day) {
+            const dayData = exerciseData.find(d => d.day === day);
+            const dayTitle = document.getElementById('day-title');
+            if (dayData) {
+                dayTitle.textContent = `Day ${day}: ${dayData.title}`;
+            } else {
+                dayTitle.textContent = '';
+            }
         }
 
         // Show specific day
@@ -243,6 +280,8 @@
             });
             document.getElementById(`day${day}`).classList.remove('hidden');
             updateExerciseDisplay(day);
+            updateDots(day);
+            updateDayTitle(day);
         }
 
         // Update exercise display for current day
@@ -260,14 +299,26 @@
         function markDone(day, index) {
             currentExercises[day]++;
             localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
-            updateExerciseDisplay(day);
+            if (currentExercises[day] >= document.querySelectorAll(`#day${day} .exercise-card`).length) {
+                // Move to next day if all exercises are done
+                const nextDay = day < 5 ? day + 1 : 1;
+                showDay(nextDay);
+            } else {
+                updateExerciseDisplay(day);
+            }
         }
 
         // Skip exercise
         function skipExercise(day, index) {
             currentExercises[day]++;
             localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
-            updateExerciseDisplay(day);
+            if (currentExercises[day] >= document.querySelectorAll(`#day${day} .exercise-card`).length) {
+                // Move to next day if all exercises are skipped
+                const nextDay = day < 5 ? day + 1 : 1;
+                showDay(nextDay);
+            } else {
+                updateExerciseDisplay(day);
+            }
         }
 
         // Go to previous exercise
@@ -276,6 +327,13 @@
                 currentExercises[day]--;
                 localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
                 updateExerciseDisplay(day);
+            } else if (day > 1) {
+                // Move to the last exercise of the previous day
+                const prevDay = day - 1;
+                showDay(prevDay);
+                currentExercises[prevDay] = document.querySelectorAll(`#day${prevDay} .exercise-card`).length - 1;
+                localStorage.setItem(`day${prevDay}_currentExercise`, currentExercises[prevDay]);
+                updateExerciseDisplay(prevDay);
             }
         }
 
@@ -328,7 +386,7 @@
                 }
             } else if (touchEndX - touchStartX > swipeThreshold) {
                 // Swipe right (previous exercise)
-                if (currentExercises[day] > 0) {
+                if (currentExercises[day] > 0 || day > 1) {
                     swipeRight.classList.add('show');
                     setTimeout(() => swipeRight.classList.remove('show'), 300);
                     previousExercise(day);
