@@ -8,7 +8,7 @@
                 "name": "Lat Pulldown",
                 "description": "Sit on the lat pulldown machine with knees under pads. Grab the bar with a wide grip. Pull down to upper chest, squeezing back muscles, then return slowly.",
                 "setsReps": "3 sets of 10-12 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lat_Pulldown/0.jpg",
+                "imageUrl": "https://cdn.jefit.com/assets/img/exercises/gifs/86.gif",
                 "videoUrl": "https://www.youtube.com/embed/AOpi-p0cJkc"
             },
             {
@@ -16,7 +16,7 @@
                 "name": "Seated Cable Row",
                 "description": "Sit at the cable row machine, feet on platform. Grab handle, keep back straight, pull towards abdomen, squeezing back, then return.",
                 "setsReps": "3 sets of 10-12 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Seated_Cable_Row/0.jpg",
+                "imageUrl": "https://cdn.jefit.com/assets/img/exercises/gifs/21.gif",
                 "videoUrl": "https://www.youtube.com/embed/UCXxvVItLoM"
             },
             {
@@ -24,7 +24,7 @@
                 "name": "One-Arm Dumbbell Row",
                 "description": "Place left knee and hand on bench. Hold dumbbell in right hand, pull to side, elbow close, then lower. Switch sides.",
                 "setsReps": "3 sets of 10-12 reps per side",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/One_Arm_Dumbbell_Row/0.jpg",
+                "imageUrl": "https://cdn.jefit.com/assets/img/exercises/gifs/90.gif",
                 "videoUrl": "https://www.youtube.com/embed/9Y4H90i5cUE"
             },
             {
@@ -32,7 +32,7 @@
                 "name": "Inverted Row",
                 "description": "Lie under a bar, grab with overhand grip, body straight. Pull chest to bar, lower back.",
                 "setsReps": "3 sets of 10-12 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Inverted_Row/0.jpg",
+                "imageUrl": "https://cdn.jefit.com/assets/img/exercises/gifs/818.gif",
                 "videoUrl": "https://www.youtube.com/embed/5-3bT6WNAew"
             },
             {
@@ -40,7 +40,7 @@
                 "name": "Dumbbell Curl",
                 "description": "Stand, hold dumbbells with palms forward. Curl weights to shoulders, lower slowly.",
                 "setsReps": "3 sets of 10-12 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Curl/0.jpg",
+                "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/dumbbellcurl-1457043876.gif",
                 "videoUrl": "https://www.youtube.com/embed/ykJmrZ5v0Oo"
             },
             {
@@ -48,7 +48,7 @@
                 "name": "Hammer Curl",
                 "description": "Stand, hold dumbbells with palms facing in. Curl weights to shoulders, lower slowly.",
                 "setsReps": "3 sets of 10-12 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Hammer_Curl/0.jpg",
+                "imageUrl": "https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/hammercurl-1456956209.gif",
                 "videoUrl": "https://www.youtube.com/embed/zC3nLlEvin4"
             },
             {
@@ -56,7 +56,7 @@
                 "name": "Face Pull",
                 "description": "Stand at cable machine, rope at face level, pull to face, elbows out, return.",
                 "setsReps": "3 sets of 12-15 reps",
-                "imageUrl": "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Face_Pull/0.jpg",
+                "imageUrl": "https://cdn.jefit.com/assets/img/exercises/gifs/874.gif",
                 "videoUrl": "https://www.youtube.com/embed/rep-qVOkqgk"
             }
         ]
