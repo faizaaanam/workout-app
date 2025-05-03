@@ -1,21 +1,22 @@
 {
-    "name": "5-Day Gym Plan",
-    "short_name": "Gym Plan",
-    "description": "A 5-day gym workout plan with exercises and progress tracking",
-    "start_url": "/index.html",
+    "name": "FitPulse: 5-Day Gym Plan",
+    "short_name": "FitPulse",
+    "description": "A 5-day gym plan to help you stay fit and healthy.",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#f3f4f6",
     "theme_color": "#1e40af",
     "icons": [
-        {
-            "src": "gym_icon_192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "gym_icon_1024.png",
-            "sizes": "1024x1024",
-            "type": "image/png"
-        }
-    ]
-}
+      {
+        "src": "gym_icon_192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "gym_icon_1024.png",
+        "sizes": "1024x1024",
+        "type": "image/png"
+      }
+    ],
+    "scope": "/"
+  }
