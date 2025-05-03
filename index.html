@@ -22,9 +22,6 @@
             opacity: 0;
             display: none;
         }
-        .day-button {
-            transition: background-color 0.2s ease;
-        }
         .collapsible-content {
             max-height: 0;
             overflow: hidden;
@@ -59,17 +56,62 @@
         .menu-content {
             transform: translateX(100%);
             transition: transform 0.3s ease;
+            z-index: 50; /* Ensure menu appears above dropdown */
         }
         .menu-content.open {
             transform: translateX(0);
         }
+        /* Custom styling for the dropdown */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 20rem;
+            z-index: 10; /* Lower than menu-content */
+        }
+        .custom-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: background-color 0.2s ease;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .custom-select:hover {
+            background-color: #2563eb;
+        }
+        .custom-select:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #93c5fd;
+        }
+        .custom-select-arrow {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        @media (min-width: 640px) {
+            .custom-select {
+                font-size: 1rem;
+                line-height: 1.5rem;
+                padding: 0.5rem 2.5rem 0.5rem 1rem;
+            }
+        }
         @media (max-width: 640px) {
             h1 {
                 font-size: 1.5rem;
-            }
-            .day-button {
-                font-size: 0.875rem;
-                padding: 0.5rem 1rem;
             }
             .exercise-card {
                 padding: 1rem;
@@ -81,7 +123,7 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
-    <header class="flex items-center justify-between w-full max-w-2xl mb-6">
+    <header class="flex items-center justify-between w-full max-w-2xl mb-4">
         <div class="flex items-center space-x-2">
             <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9h3m12 0h3m-3 0h-6m6 0V6a3 3 0 00-3-3H9a3 3 0 00-3 3v3m0 0v6m0 0H3m3 0h6m-6 0v3a3 3 0 003 3h6a3 3 0 003-3v-3m-6 0h6"></path>
@@ -94,6 +136,7 @@
             </svg>
         </button>
     </header>
+
     <div id="menu" class="menu-content fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-4 transform translate-x-full">
         <button id="close-menu" class="p-2 mb-4 focus:outline-none">
             <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -109,13 +152,18 @@
         <button id="retry" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Retry</button>
     </div>
 
-    <!-- Day Navigation -->
-    <div class="flex flex-nowrap overflow-x-auto space-x-2 mb-6 px-4">
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(1)">Day 1</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(2)">Day 2</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(3)">Day 3</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(4)">Day 4</button>
-        <button class="day-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm sm:text-base" onclick="showDay(5)">Day 5</button>
+    <!-- Day Navigation with Dropdown -->
+    <div class="custom-select-wrapper mb-6 w-full max-w-2xl">
+        <select id="day-select" class="custom-select" onchange="showDay(this.value)">
+            <option value="1">Day 1</option>
+            <option value="2">Day 2</option>
+            <option value="3">Day 3</option>
+            <option value="4">Day 4</option>
+            <option value="5">Day 5</option>
+        </select>
+        <svg class="custom-select-arrow w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
     </div>
 
     <!-- Day Containers -->
@@ -165,6 +213,7 @@
                 exerciseData = await fetchExercises();
                 hideError();
                 renderDays();
+                updateDayDropdown();
                 for (let day = 1; day <= 5; day++) {
                     const savedIndex = localStorage.getItem(`day${day}_currentExercise`);
                     if (savedIndex !== null) {
@@ -179,6 +228,25 @@
             }
         }
 
+        // Update day dropdown with titles and completion status
+        function updateDayDropdown() {
+            const select = document.getElementById('day-select');
+            exerciseData.forEach(dayData => {
+                const option = select.querySelector(`option[value="${dayData.day}"]`);
+                const isComplete = currentExercises[dayData.day] >= document.querySelectorAll(`#day${dayData.day} .exercise-card`).length;
+                option.textContent = `Day ${dayData.day} - ${dayData.title}${isComplete ? ' ✔' : ''}`;
+            });
+        }
+
+        // Update completion status for a day in the dropdown
+        function updateCompletionStatus(day) {
+            const select = document.getElementById('day-select');
+            const option = select.querySelector(`option[value="${day}"]`);
+            const dayData = exerciseData.find(d => d.day === day);
+            const isComplete = currentExercises[day] >= document.querySelectorAll(`#day${day} .exercise-card`).length;
+            option.textContent = `Day ${day} - ${dayData.title}${isComplete ? ' ✔' : ''}`;
+        }
+
         // Render all days from JSON
         function renderDays() {
             if (!exerciseData.length) {
@@ -188,7 +256,6 @@
             exerciseData.forEach(dayData => {
                 const dayContainer = document.getElementById(`day${dayData.day}`);
                 dayContainer.innerHTML = `
-                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">Day ${dayData.day}: ${dayData.title}</h2>
                     <div class="swipe-feedback swipe-left">➡️</div>
                     <div class="swipe-feedback swipe-right">⬅️</div>
                 `;
@@ -213,8 +280,7 @@
                 dayContainer.innerHTML += `
                     <div class="day-complete bg-white rounded-lg shadow-lg p-6 mb-4 max-w-lg w-full hidden">
                         <h3 class="text-lg sm:text-xl font-bold text-gray-800">Day ${dayData.day} Complete!</h3>
-                        <p class="text-gray-600 my-4 text-sm sm:text-base">Great job! You've completed all exercises for Day ${dayData.day}. Click below to start over.</p>
-                        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onclick="resetDay(${dayData.day})">Start Day ${dayData.day} Again</button>
+                        <p class="text-gray-600 my-4 text-sm sm:text-base">Great job! You've completed all exercises for Day ${dayData.day}. Select another day from the dropdown above to continue.</p>
                     </div>
                 `;
             });
@@ -225,24 +291,25 @@
             const errorContainer = document.getElementById('error-container');
             errorContainer.classList.remove('hidden');
             document.querySelectorAll('.day-container').forEach(container => container.classList.add('hidden'));
-            document.querySelector('.flex-nowrap').classList.add('hidden');
+            document.querySelector('.custom-select-wrapper').classList.add('hidden');
         }
 
         // Hide error UI
         function hideError() {
             const errorContainer = document.getElementById('error-container');
             errorContainer.classList.add('hidden');
-            document.querySelector('.flex-nowrap').classList.remove('hidden');
+            document.querySelector('.custom-select-wrapper').classList.remove('hidden');
         }
 
         // Show specific day
         function showDay(day) {
-            currentDay = day;
+            currentDay = parseInt(day);
             document.querySelectorAll('.day-container').forEach(container => {
                 container.classList.add('hidden');
             });
-            document.getElementById(`day${day}`).classList.remove('hidden');
-            updateExerciseDisplay(day);
+            document.getElementById(`day${currentDay}`).classList.remove('hidden');
+            updateExerciseDisplay(currentDay);
+            document.getElementById('day-select').value = currentDay;
         }
 
         // Update exercise display for current day
@@ -254,18 +321,27 @@
                 exercise.classList.toggle('hidden', index !== currentExercises[day] || isComplete);
             });
             dayComplete.classList.toggle('hidden', !isComplete);
+            updateCompletionStatus(day);
         }
 
         // Mark exercise as done
         function markDone(day, index) {
-            currentExercises[day]++;
+            if (currentExercises[day] < document.querySelectorAll(`#day${day} .exercise-card`).length - 1) {
+                currentExercises[day]++;
+            } else {
+                currentExercises[day] = document.querySelectorAll(`#day${day} .exercise-card`).length;
+            }
             localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
             updateExerciseDisplay(day);
         }
 
         // Skip exercise
         function skipExercise(day, index) {
-            currentExercises[day]++;
+            if (currentExercises[day] < document.querySelectorAll(`#day${day} .exercise-card`).length - 1) {
+                currentExercises[day]++;
+            } else {
+                currentExercises[day] = document.querySelectorAll(`#day${day} .exercise-card`).length;
+            }
             localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
             updateExerciseDisplay(day);
         }
@@ -276,14 +352,13 @@
                 currentExercises[day]--;
                 localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
                 updateExerciseDisplay(day);
+            } else if (day > 1) {
+                const prevDay = day - 1;
+                showDay(prevDay);
+                currentExercises[prevDay] = document.querySelectorAll(`#day${prevDay} .exercise-card`).length - 1;
+                localStorage.setItem(`day${prevDay}_currentExercise`, currentExercises[prevDay]);
+                updateExerciseDisplay(prevDay);
             }
-        }
-
-        // Reset day to first exercise
-        function resetDay(day) {
-            currentExercises[day] = 0;
-            localStorage.setItem(`day${day}_currentExercise`, 0);
-            updateExerciseDisplay(day);
         }
 
         // Toggle video collapsible
@@ -320,18 +395,43 @@
             const swipeRight = container.querySelector('.swipe-right');
 
             if (touchStartX - touchEndX > swipeThreshold) {
-                // Swipe left (next exercise)
-                if (currentExercises[day] < exercises.length) {
+                // Swipe left
+                if (currentExercises[day] < exercises.length - 1) {
                     swipeLeft.classList.add('show');
                     setTimeout(() => swipeLeft.classList.remove('show'), 300);
-                    markDone(day, currentExercises[day]);
+                    currentExercises[day]++;
+                    localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
+                    updateExerciseDisplay(day);
+                } else if (currentExercises[day] === exercises.length - 1) {
+                    swipeLeft.classList.add('show');
+                    setTimeout(() => swipeLeft.classList.remove('show'), 300);
+                    currentExercises[day] = exercises.length;
+                    localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
+                    updateExerciseDisplay(day);
                 }
+                // Do nothing if already on "Day Complete"
             } else if (touchEndX - touchStartX > swipeThreshold) {
-                // Swipe right (previous exercise)
-                if (currentExercises[day] > 0) {
+                // Swipe right
+                if (currentExercises[day] === exercises.length) {
                     swipeRight.classList.add('show');
                     setTimeout(() => swipeRight.classList.remove('show'), 300);
-                    previousExercise(day);
+                    currentExercises[day] = exercises.length - 1;
+                    localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
+                    updateExerciseDisplay(day);
+                } else if (currentExercises[day] > 0) {
+                    swipeRight.classList.add('show');
+                    setTimeout(() => swipeRight.classList.remove('show'), 300);
+                    currentExercises[day]--;
+                    localStorage.setItem(`day${day}_currentExercise`, currentExercises[day]);
+                    updateExerciseDisplay(day);
+                } else if (day > 1) {
+                    swipeRight.classList.add('show');
+                    setTimeout(() => swipeRight.classList.remove('show'), 300);
+                    const prevDay = day - 1;
+                    showDay(prevDay);
+                    currentExercises[prevDay] = document.querySelectorAll(`#day${prevDay} .exercise-card`).length - 1;
+                    localStorage.setItem(`day${prevDay}_currentExercise`, currentExercises[prevDay]);
+                    updateExerciseDisplay(prevDay);
                 }
             }
         }
@@ -348,23 +448,21 @@
         document.addEventListener('DOMContentLoaded', async () => {
             async function initialize() {
                 await loadExerciseData();
-                // Menu event listeners
                 document.getElementById('hamburger').addEventListener('click', toggleMenu);
                 document.getElementById('close-menu').addEventListener('click', toggleMenu);
 
-                // Reset all progress
                 document.getElementById('reset').addEventListener('click', () => {
                     if (confirm('Are you sure you want to reset all progress?')) {
                         for (let day = 1; day <= 5; day++) {
                             currentExercises[day] = 0;
                             localStorage.setItem(`day${day}_currentExercise`, 0);
+                            updateExerciseDisplay(day);
                         }
                         showDay(currentDay);
                         toggleMenu();
                     }
                 });
 
-                // Retry button
                 document.getElementById('retry').addEventListener('click', async () => {
                     await loadExerciseData();
                 });
@@ -373,6 +471,5 @@
             await initialize();
         });
     </script>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'939da6e98c0e44dc',t:'MTc0NjI1MzIyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
