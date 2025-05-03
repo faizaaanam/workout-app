@@ -1,8 +1,8 @@
 const CACHE_NAME = 'fitpulse-cache-v1';
 const urlsToCache = [
-  '/',
-  'exercise-data.json',
-  'gym_icon_192.png',
+  '/workout-app/',
+  '/workout-app/exercise-data.json',
+  '/workout-app/gym_icon_192.png',
   'https://cdn.tailwindcss.com'
 ];
 
